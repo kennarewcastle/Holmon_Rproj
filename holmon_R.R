@@ -36,7 +36,7 @@ ggplot(data=resp_dat,aes(x=day,y=resp,color=litter,linetype=grazing)) +
   geom_smooth(fill=NA) +
   scale_colour_hue(labels=c("Aspen","Empetrum","Lichen","Moss"),name="Litter Added") +
   scale_linetype_discrete(labels=c("Grazed","Moss-Dominated","Ungrazed"),name="Grazing Cond.") +
-  labs(x= "Incubation Day", y= "Respiration Rate (ug CO2/g soil/hr)") +
+  labs(x= "Incubation Day", y= "Respiration Rate (ug CO2/g dry soil/hr)") +
   theme(legend.position="top",
         panel.grid.minor=element_blank(),
         panel.grid.major=element_blank(),
@@ -61,7 +61,7 @@ ggplot(data=bact_dat,aes(x=dayBact,y=bact_growth,color=litterBact,linetype=grazi
   geom_smooth(fill=NA) +
   scale_colour_hue(labels=c("Aspen","Empetrum","Lichen","Moss"),name="Litter Added") +
   scale_linetype_discrete(labels=c("Grazed","Moss-Dominated","Ungrazed"),name="Grazing Cond.") +
-  labs(x= "Incubation Day", y= "Bacterial Growth Rate (picomoles leucine/g soil/hr) ") +
+  labs(x= "Incubation Day", y= "Bacterial Growth Rate (pmole leucine/g dry soil/hr) ") +
   theme(legend.position="top",
         panel.grid.minor=element_blank(),
         panel.grid.major=element_blank(),
@@ -78,7 +78,49 @@ ggplot(data=bact_dat,aes(x=dayBact,y=bact_growth,color=litterBact,linetype=grazi
   scale_colour_hue(labels=c("Aspen","Empetrum","Lichen","Moss"),name="Litter Added") +
   scale_linetype_discrete(labels=c("Grazed","Moss-Dominated","Ungrazed"),name="Grazing Cond.") +
   scale_shape_discrete(labels=c("Grazed","Moss-Dominated","Ungrazed"),name="Grazing Cond.") +
-  labs(x= "Incubation Day", y= "Bacterial Growth Rate (picomoles leucine/g soil/hr) ") +
+  labs(x= "Incubation Day", y= "Bacterial Growth Rate (pmole leucine/g soil/hr) ") +
+  theme(legend.position="top",
+        panel.grid.minor=element_blank(),
+        panel.grid.major=element_blank(),
+        axis.text=element_text(colour="black",size=10),
+        axis.title=element_text(size=14,face="bold"),
+        panel.border=element_rect(fill=NA,colour="black",size=1.5),
+        panel.background=element_rect(fill=NA)
+        )
+
+##### Fungal growth (averaged over 4 replicates) over time
+
+# Create fungal growth data frame
+library(dplyr)
+fung_dat<-filter(raw_dat,fungal_growth_pmol_ergosterol_h.1_g_dry_soil..1!="NA")
+grazingFung<-fung_dat$grazing_treatment
+litterFung<-fung_dat$litter_treatment
+fung_growth<-fung_dat$bacterial_growth
+dayFung<-fung_dat$day
+
+# Create figure, fungal growth over incubation (no points, clean)
+ggplot(data=fung_dat,aes(x=dayFung,y=fung_growth,color=litterFung,linetype=grazingFung)) +
+  geom_smooth(fill=NA) +
+  scale_colour_hue(labels=c("Aspen","Empetrum","Lichen","Moss"),name="Litter Added") +
+  scale_linetype_discrete(labels=c("Grazed","Moss-Dominated","Ungrazed"),name="Grazing Cond.") +
+  labs(x= "Incubation Day", y= "Fungal Growth Rate (pmole ergosterol/g dry soil/hr) ") +
+  theme(legend.position="top",
+        panel.grid.minor=element_blank(),
+        panel.grid.major=element_blank(),
+        axis.text=element_text(colour="black",size=10),
+        axis.title=element_text(size=14,face="bold"),
+        panel.border=element_rect(fill=NA,colour="black",size=1.5),
+        panel.background=element_rect(fill=NA)
+      )
+
+# Create figure, fungal growth over incubation (points, messy)
+ggplot(data=fung_dat,aes(x=dayFung,y=fung_growth,color=litterFung,linetype=grazingFung,shape=grazingFung)) +
+  geom_smooth(fill=NA) +
+  geom_point() +
+  scale_colour_hue(labels=c("Aspen","Empetrum","Lichen","Moss"),name="Litter Added") +
+  scale_linetype_discrete(labels=c("Grazed","Moss-Dominated","Ungrazed"),name="Grazing Cond.") +
+  scale_shape_discrete(labels=c("Grazed","Moss-Dominated","Ungrazed"),name="Grazing Cond.") +
+  labs(x= "Incubation Day", y= "Fungal Growth Rate (pmole ergosterol/g dry soil/hr) ") +
   theme(legend.position="top",
         panel.grid.minor=element_blank(),
         panel.grid.major=element_blank(),
