@@ -29,13 +29,27 @@ ggplot(data=resp_dat,aes(x=day,y=resp,color=litter,linetype=grazing,shape=grazin
         )
 
 # Graph with points (messy)
-
+ggplot(data=resp_dat,aes(x=day,y=resp,color=litter,linetype=grazing,shape=grazing)) +
+  geom_smooth(fill=NA) +
+  geom_point() +
+  scale_colour_hue(labels=c("Aspen","Empetrum","Lichen","Moss"),name="Litter Added") +
+  scale_linetype_discrete(labels=c("Grazed","Moss-Dominated","Ungrazed"),name="Grazing Cond.") +
+  scale_shape_discrete(labels=c("Grazed","Moss-Dominated","Ungrazed"),name="Grazing Cond.") +
+  labs(x= "Incubation Day", y= "Respiration Rate (ug CO2/g soil/hr)") +
+  theme(legend.position="top",
+        panel.grid.minor=element_blank(),
+        panel.grid.major=element_blank(),
+        axis.text=element_text(colour="black",size=10),
+        axis.title=element_text(size=14,face="bold"),
+        panel.border=element_rect(fill=NA,colour="black",size=1.5),
+        panel.background=element_rect(fill=NA)
+  )
   
 # Graph without points (better)
 ggplot(data=resp_dat,aes(x=day,y=resp,color=litter,linetype=grazing)) +
   geom_smooth(fill=NA) +
   scale_colour_hue(labels=c("Aspen","Empetrum","Lichen","Moss"),name="Litter Added") +
-  scale_linetype_discrete(labels=c("Grazed","Ungrazed","Moss-Dominated"),name="Grazing Cond.") +
+  scale_linetype_discrete(labels=c("Grazed","Moss-Dominated","Ungrazed"),name="Grazing Cond.") +
   labs(x= "Incubation Day", y= "Respiration Rate (ug CO2/g soil/hr)") +
   theme(legend.position="top",
         panel.grid.minor=element_blank(),
