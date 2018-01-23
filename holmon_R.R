@@ -135,6 +135,40 @@ ggplot(data=fung_dat,aes(x=dayFung,y=fung_growth,color=litterFung,linetype=grazi
 cumulative_response<-function(dat,response_name){
   library(dplyr)
   
+  response<-dat$response_name
+  N<-length(response)
+  response_vect<-c()
+  day<-dat$day
+  
+  for (i in 1:N) {
+    inc_growth<-response[i]*(day[i]-day[(i-1)])
+    response_vect[i]<-inc_growth
+  }
+
+  
+  cumulative_growth<-sum(response_vect)
+  
+  return(cumulative_growth)
+
+}
+
+##### Test function for resp, bact growth, and fungal growth
+
+# Respiration
+resp_dat<-filter(raw_dat,resp_rate_ug_CO2.g_soil.h.!="NA") # "dat" data frame that function will work with
+real_respdat<-filter(resp_dat,day>0)
+real_respdat6<-filter(real_respdat,replicate_numb==6)
+
+cumulative_response(dat=real_respdat6, response_name=resp_rate_ug_CO2.g_soil.h.)
+
+bact_df<-data.frame(rep6=c(), rep1=c(), rep8=c(), rep7=c())
+fung_df<-data.frame(rep6=c(), rep1=c(), rep8=c(), rep7=c())
+
+
+#### JUNK
+cumulative_response<-function(dat,response_name){
+  library(dplyr)
+  
   rep6<-filter(dat,replicate_numb==6)
   rep1<-filter(dat,replicate_numb==1)
   rep8<-filter(dat,replicate_numb==8)
@@ -180,19 +214,13 @@ cumulative_response<-function(dat,response_name){
     response_rep7[l]<-inc_growth7
   }
   
+  rep6_total<-sum(response_rep6)
+  rep1_total<-sum(response_rep1)
+  rep8_total<-sum(response_rep8)
+  rep7_total<-sum(response_rep7)
   
-  return(rep6_total=sum(response_rep6), rep1_total=sum(response_rep1), 
-                    rep8_total=sum(response_rep8), rep7_total=sum(response_rep7))
-
+  summary_vect<-c(rep6_total,rep1_total,rep8_total,rep7_total)
+  
+  return(summary_vect)
+  
 }
-
-##### Test function for resp, bact growth, and fungal growth
-
-# Respiration
-resp_dat<-filter(raw_dat,resp_rate_ug_CO2.g_soil.h.!="NA") # "dat" data frame that function will work with
-real_respdat<-filter(resp_dat,day>0)
-
-cumulative_response(dat=resp_dat, response_name=resp_rate_ug_CO2.g_soil.h.)
-
-bact_df<-data.frame(rep6=c(), rep1=c(), rep8=c(), rep7=c())
-fung_df<-data.frame(rep6=c(), rep1=c(), rep8=c(), rep7=c())
