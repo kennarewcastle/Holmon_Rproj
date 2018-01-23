@@ -138,17 +138,36 @@ cumulative_response<-function(dat,response_name){
   response<-dat$response_name
   N<-length(response)
   response_vect<-c()
+  treat_vect<-c()
   day<-dat$day
+  treat<-dat$treatment_ID
   
   for (i in 1:N) {
-    inc_growth<-response[i]*(day[i]-day[(i-1)])
+    if (day[i] > 0) { 
+    inc_growth<-((response[i]*response[i-1]/2)*(day[i]-day[(i-1)]))
     response_vect[i]<-inc_growth
+    treat_vect[i]<-treat[i]
+    }
   }
 
+  results<-cbind(treat_vect,response_vect)
+  UA<-filter(results,treat_vect=="UA")
+  UE<-filter(results,treat_vect=="UE")
+  UL<-filter(results,treat_vect=="UL")
+  UM<-filter(results,treat_vect=="UM")
+  GA<-filter(results,treat_vect=="GA")
+  GE<-filter(results,treat_vect=="GE")
+  GL<-filter(results,treat_vect=="GL")
+  GM<-filter(results,treat_vect=="GM")
+  MA<-filter(results,treat_vect=="MA")
+  ME<-filter(results,treat_vect=="ME")
+  ML<-filter(results,treat_vect=="ML")
+  MM<-filter(results,treat_vect=="MM")
   
-  cumulative_growth<-sum(response_vect)
+  treatNames<-c("UA","UE","UL","UM","GA","GE","GL","GM","MA","ME","ML","MM")
   
-  return(cumulative_growth)
+  
+  return()
 
 }
 
@@ -165,7 +184,9 @@ bact_df<-data.frame(rep6=c(), rep1=c(), rep8=c(), rep7=c())
 fung_df<-data.frame(rep6=c(), rep1=c(), rep8=c(), rep7=c())
 
 
-#### JUNK
+#### JUNK 
+### Problem is that data should be sorted by replicate, ID (UA, UE, etc), day so that day[i-1]
+### corresponds to previous sampling day.
 cumulative_response<-function(dat,response_name){
   library(dplyr)
   
