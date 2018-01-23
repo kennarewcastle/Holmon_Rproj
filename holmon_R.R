@@ -1,5 +1,7 @@
 setwd("~/Desktop")
-raw_dat<-read.csv("Holmon_incubations.csv")
+raw_dat<-read.csv("Holmon_incubations.csv") ##### IN ORDER FOR FUNCTION TO WORK, dat is ordered by:
+# rep number -> grazing treatment (U,G,M) -> litter treatment (A,E,L,M) --> day
+
 
 ##### Resp (averaged over 4 replicates) over time
 
@@ -139,13 +141,18 @@ cumulative_response<-function(dat,response_name){
   N<-length(response)
   response_vect<-c()
   treat_vect<-c()
-  day<-dat$day
+  Day<-dat$day
   treat<-dat$treatment_ID
   
   for (i in 1:N) {
-    if (day[i] > 0) { 
-    inc_growth<-((response[i]*response[i-1]/2)*(day[i]-day[(i-1)]))
+    if (Day[i] > 0) { 
+    inc_growth<-((response[i]*response[i-1]/2)*((Day[i]-Day[(i-1)])*576))
     response_vect[i]<-inc_growth
+    treat_vect[i]<-treat[i]
+    }
+    
+    else {
+    response_vect[i]<-0
     treat_vect[i]<-treat[i]
     }
   }
@@ -165,20 +172,19 @@ cumulative_response<-function(dat,response_name){
   MM<-filter(results,treat_vect=="MM")
   
   treatNames<-c("UA","UE","UL","UM","GA","GE","GL","GM","MA","ME","ML","MM")
+  totals<-c(sum(UA$response_vect),sum(UE$response_vect),sum(UL$response_vect),sum(UM$response_vect),sum(GA$response_vect),sum(GE$response_vect),sum(GL$response_vect),sum(GM$response_vect),sum(MA$response_vect),sum(ME$response_vect),sum(ML$response_vect),sum(MM$response_vect))
   
-  
-  return()
-
+  ENDresults<-cbind(treatNames,totals)
+  return(ENDresults)
 }
 
 ##### Test function for resp, bact growth, and fungal growth
 
 # Respiration
 resp_dat<-filter(raw_dat,resp_rate_ug_CO2.g_soil.h.!="NA") # "dat" data frame that function will work with
-real_respdat<-filter(resp_dat,day>0)
-real_respdat6<-filter(real_respdat,replicate_numb==6)
+respdat6<-filter(resp_dat,replicate_numb==6)
 
-cumulative_response(dat=real_respdat6, response_name=resp_rate_ug_CO2.g_soil.h.)
+cumulative_response(dat=respdat6, response_name=resp_rate_ug_CO2.g_soil.h.)
 
 bact_df<-data.frame(rep6=c(), rep1=c(), rep8=c(), rep7=c())
 fung_df<-data.frame(rep6=c(), rep1=c(), rep8=c(), rep7=c())
