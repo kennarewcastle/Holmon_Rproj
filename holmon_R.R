@@ -95,7 +95,7 @@ library(dplyr)
 fung_dat<-filter(raw_dat,fungal_growth_pmol_ergosterol_h.1_g_dry_soil..1!="NA")
 grazingFung<-fung_dat$grazing_treatment
 litterFung<-fung_dat$litter_treatment
-fung_growth<-fung_dat$bacterial_growth
+fung_growth<-fung_dat$fungal_growth_pmol_ergosterol_h.1_g_dry_soil..1
 dayFung<-fung_dat$day
 
 # Create figure, fungal growth over incubation (no points, clean)

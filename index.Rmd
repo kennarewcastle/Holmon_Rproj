@@ -1,18 +1,20 @@
 ---
 title: "Holmon Grazing x Litter Incubation"
 author: "Kenna Rewcastle"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 Respiration rate over the course of the incubation. Line color corresponds to type of litter added, while linetype corresponds to grazing treatment. All 12 treatments were averaged across 4 replicates; lines were plotted using loess smoothihg. It appears that lines are grouped by grazing treatment, meaning that grazing treatment has a stronger influence over microbial activity than does type of litter added.
 
-```{r} 
+```{r include=FALSE}
 # Run in console.
 setwd("~/Desktop")
 raw_dat<-read.csv("Holmon_incubations.csv")
 ```
 
-```{r}
+```{r echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
 ##### Resp (averaged over 4 replicates) over time
 # create respiration data frame
 library(dplyr)
@@ -43,7 +45,7 @@ ggplot(data=resp_dat,aes(x=day,y=resp,color=litter,linetype=grazing,shape=grazin
   )
   
 ```
-```{r}
+```{r echo=FALSE}
 # Graph without points (better)
 ggplot(data=resp_dat,aes(x=day,y=resp,color=litter,linetype=grazing)) +
   geom_smooth(fill=NA) +
@@ -62,7 +64,7 @@ ggplot(data=resp_dat,aes(x=day,y=resp,color=litter,linetype=grazing)) +
 
 Fungal growth rate over the course of the incubation. Line color corresponds to type of litter added, while linetype corresponds to grazing treatment. All 12 treatments were averaged across 4 replicates; lines were plotted using loess smoothihg. Fungal growth also seems to group by grazing treatment, though there is a great deal of noise in the first few samplings points.
 
-```{r}
+```{r include=FALSE}
 # Create fungal growth data frame
 library(dplyr)
 fung_dat<-filter(raw_dat,fungal_growth_pmol_ergosterol_h.1_g_dry_soil..1!="NA")
@@ -72,7 +74,7 @@ fung_growth<-fung_dat$bacterial_growth
 dayFung<-fung_dat$day
 ```
 
-```{r}
+```{r echo=FALSE}
 # Create figure, fungal growth over incubation (no points, clean)
 ggplot(data=fung_dat,aes(x=dayFung,y=fung_growth,color=litterFung,linetype=grazingFung)) +
   geom_smooth(fill=NA) +
@@ -90,7 +92,7 @@ ggplot(data=fung_dat,aes(x=dayFung,y=fung_growth,color=litterFung,linetype=grazi
 
 ```
 
-```{r}
+```{r echo=FALSE}
 # Create figure, fungal growth over incubation (points, messy)
 ggplot(data=fung_dat,aes(x=dayFung,y=fung_growth,color=litterFung,linetype=grazingFung,shape=grazingFung)) +
   geom_smooth(fill=NA) +
@@ -111,7 +113,7 @@ ggplot(data=fung_dat,aes(x=dayFung,y=fung_growth,color=litterFung,linetype=grazi
 
 Bacterial growth rate over the course of the incubation. Line color corresponds to type of litter added, while linetype corresponds to grazing treatment. All 12 treatments were averaged across 4 replicates; lines were plotted using loess smoothihg. Fungal growth also seems to group by grazing treatment, though there is a great deal of noise in the first few samplings points.
 
-```{r}
+```{r include=FALSE}
 # Create bacterial growth data frame
 library(dplyr)
 bact_dat<-filter(raw_dat,bacterial_growth!="NA")
@@ -121,7 +123,7 @@ bact_growth<-bact_dat$bacterial_growth
 dayBact<-bact_dat$day
 ```
 
-```{r}
+```{r echo=FALSE}
 # Create figure, bacterial growth over incubation (no points, clean)
 ggplot(data=bact_dat,aes(x=dayBact,y=bact_growth,color=litterBact,linetype=grazingBact)) +
   geom_smooth(fill=NA) +
@@ -138,7 +140,7 @@ ggplot(data=bact_dat,aes(x=dayBact,y=bact_growth,color=litterBact,linetype=grazi
         )
 ```
 
-```{r}
+```{r echo=FALSE}
 # Create figure, bacterial growth over incubation (points, messy)
 ggplot(data=bact_dat,aes(x=dayBact,y=bact_growth,color=litterBact,linetype=grazingBact,shape=grazingBact)) +
   geom_smooth(fill=NA) +
