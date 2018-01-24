@@ -136,46 +136,45 @@ ggplot(data=fung_dat,aes(x=dayFung,y=fung_growth,color=litterFung,linetype=grazi
 
 cumulative_response<-function(dat,response_name){
   library(dplyr)
-  
   response<-dat$response_name
   N<-length(response)
   response_vect<-c()
   treat_vect<-c()
-  Day<-dat$day
+  Day<-as.numeric(dat$day)
   treat<-dat$treatment_ID
   
   for (i in 1:N) {
-    if (Day[i] > 0) { 
-    inc_growth<-((response[i]*response[i-1]/2)*((Day[i]-Day[(i-1)])*576))
+    #if (Day[i] > 0) { 
+    inc_growth<-((response[i]+response[i-1]/2)*((Day[i]-Day[(i-1)])*24))
     response_vect[i]<-inc_growth
     treat_vect[i]<-treat[i]
-    }
-    
-    else {
-    response_vect[i]<-0
-    treat_vect[i]<-treat[i]
-    }
+    #}
+    #else {
+    #response_vect[i]<-0
+    #treat_vect[i]<-treat[i]
+    #}
   }
 
   results<-cbind(treat_vect,response_vect)
-  UA<-filter(results,treat_vect=="UA")
-  UE<-filter(results,treat_vect=="UE")
-  UL<-filter(results,treat_vect=="UL")
-  UM<-filter(results,treat_vect=="UM")
-  GA<-filter(results,treat_vect=="GA")
-  GE<-filter(results,treat_vect=="GE")
-  GL<-filter(results,treat_vect=="GL")
-  GM<-filter(results,treat_vect=="GM")
-  MA<-filter(results,treat_vect=="MA")
-  ME<-filter(results,treat_vect=="ME")
-  ML<-filter(results,treat_vect=="ML")
-  MM<-filter(results,treat_vect=="MM")
+  #UA<-filter(results,treat_vect=="UA")
+  #UE<-filter(results,treat_vect=="UE")
+  #UL<-filter(results,treat_vect=="UL")
+  #UM<-filter(results,treat_vect=="UM")
+  #GA<-filter(results,treat_vect=="GA")
+  #GE<-filter(results,treat_vect=="GE")
+  #GL<-filter(results,treat_vect=="GL")
+  #GM<-filter(results,treat_vect=="GM")
+  #MA<-filter(results,treat_vect=="MA")
+  #ME<-filter(results,treat_vect=="ME")
+  #ML<-filter(results,treat_vect=="ML")
+  #MM<-filter(results,treat_vect=="MM")
   
-  treatNames<-c("UA","UE","UL","UM","GA","GE","GL","GM","MA","ME","ML","MM")
-  totals<-c(sum(UA$response_vect),sum(UE$response_vect),sum(UL$response_vect),sum(UM$response_vect),sum(GA$response_vect),sum(GE$response_vect),sum(GL$response_vect),sum(GM$response_vect),sum(MA$response_vect),sum(ME$response_vect),sum(ML$response_vect),sum(MM$response_vect))
+  #treatNames<-c("UA","UE","UL","UM","GA","GE","GL","GM","MA","ME","ML","MM")
+  #totals<-c(sum(UA$response_vect),sum(UE$response_vect),sum(UL$response_vect),sum(UM$response_vect),sum(GA$response_vect),sum(GE$response_vect),sum(GL$response_vect),sum(GM$response_vect),sum(MA$response_vect),sum(ME$response_vect),sum(ML$response_vect),sum(MM$response_vect))
   
-  ENDresults<-cbind(treatNames,totals)
-  return(ENDresults)
+  #ENDresults<-cbind(treatNames,totals)
+  #return(ENDresults)
+  return(results)
 }
 
 ##### Test function for resp, bact growth, and fungal growth
@@ -183,8 +182,12 @@ cumulative_response<-function(dat,response_name){
 # Respiration
 resp_dat<-filter(raw_dat,resp_rate_ug_CO2.g_soil.h.!="NA") # "dat" data frame that function will work with
 respdat6<-filter(resp_dat,replicate_numb==6)
+resp6<-respdat6$resp_rate_ug_CO2.g_soil.h.
+day6<-as.numeric(respdat6$day)
+treat6<-respdat6$treatment_ID
+dat6<-data.frame(resp6,day6,treat6)
 
-cumulative_response(dat=respdat6, response_name=resp_rate_ug_CO2.g_soil.h.)
+cumulative_response(dat=dat6,response_name=resp_rate_ug_CO2.g_soil.h.)
 
 bact_df<-data.frame(rep6=c(), rep1=c(), rep8=c(), rep7=c())
 fung_df<-data.frame(rep6=c(), rep1=c(), rep8=c(), rep7=c())
@@ -251,3 +254,88 @@ cumulative_response<-function(dat,response_name){
   return(summary_vect)
   
 }
+
+#### More junk
+
+UAdat6<-filter(dat6,treat6=="UA")
+
+
+cumulative_response<-function(dat){
+  library(dplyr)
+  response<-dat$resp6
+  N<-length(response)
+  response_vect<-c()
+  #treat_vect<-c()
+  Day<-dat$day6
+  treat<-dat$treat6
+  
+  for (i in 1:N) {
+    if (Day[i] > 0) { 
+    inc_growth<-((response[i]+response[i-1]/2)*((Day[i]-Day[(i-1)])*24))
+    response_vect[i]<-inc_growth
+    #print(treat[i])
+    #treat_vect[i]<-treat[i ]
+    }
+    else {
+    response_vect[i]<-0
+    #treat_vect[i]<-treat[i]
+    }
+  }
+  treat_vect <- as.factor(treat)
+  results<-cbind(treat_vect,response_vect)
+  results<- as.data.frame(results)
+  results$treat_vect <- as.factor(results$treat_vect)
+  #print(head(results))
+  #print(summary(results))
+  #results$treat_vect <- as.factor(results$treat_vect)
+  #ltr <- levels(results$treat_vect)
+  #res.test <- sum(results[, results$response_vect])
+  #print(res.test)
+  #res.test <- dplyr(results, .(treat_vect), summarise())
+  #return(res.test)
+  names(results) <- c("treat_vect", "response_vect")
+  UA<-results[treat_vect=="UA",]
+  UE<-results[treat_vect=="UE",]
+  UL<-results[treat_vect=="UL",]
+  UM<-results[treat_vect=="UM",]
+  GA<-results[treat_vect=="GA",]
+  GE<-results[treat_vect=="GE",]
+  GL<-results[treat_vect=="GL",]
+  GM<-results[treat_vect=="GM",]
+  MA<-results[treat_vect=="MA",]
+  ME<-results[treat_vect=="ME",]
+  ML<-results[treat_vect=="ML",]
+  MM<-results[treat_vect=="MM",]
+  
+  treatNames<-c("UA","UE","UL","UM","GA","GE","GL","GM","MA","ME","ML","MM")
+  res <- cbind(UA$response_vect,UE$response_vect,UL$response_vect,UM$response_vect,GA$response_vect,GE$response_vect,GL$response_vect,GM$response_vect,MA$response_vect,ME$response_vect,ML$response_vect,MM$response_vect)
+  colnames(res) <- c("UA","UE","UL","UM","GA","GE","GL","GM","MA","ME","ML","MM")
+
+  #totals<-c(sum(UA$response_vect),sum(UE$response_vect),sum(UL$response_vect),sum(UM$response_vect),sum(GA$response_vect),sum(GE$response_vect),sum(GL$response_vect),sum(GM$response_vect),sum(MA$response_vect),sum(ME$response_vect),sum(ML$response_vect),sum(MM$response_vect))
+  
+  totals <- apply(res, 2, sum)
+  print(totals)
+#  res <- as.data.frame(res)
+  print(head(res, 20))
+  #ENDresults<-cbind(treatNames,totals)
+  #return(ENDresults)
+
+}
+
+cumulative_response(dat=dat6)
+
+##### Test function for resp, bact growth, and fungal growth
+
+# Respiration
+resp_dat<-filter(raw_dat,resp_rate_ug_CO2.g_soil.h.!="NA") # "dat" data frame that function will work with
+respdat6<-filter(resp_dat,replicate_numb==6)
+resp6<-respdat6$resp_rate_ug_CO2.g_soil.h.
+day6<-as.numeric(respdat6$day)
+treat6<-respdat6$treatment_ID
+dat6<-data.frame(resp6,day6,treat6)
+
+cumulative_response(dat=dat6)
+
+bact_df<-data.frame(rep6=c(), rep1=c(), rep8=c(), rep7=c())
+fung_df<-data.frame(rep6=c(), rep1=c(), rep8=c(), rep7=c())
+
