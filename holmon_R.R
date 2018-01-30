@@ -151,6 +151,7 @@ cumulative_response<-function(dat){
     response_vect[i]<-0
     }
   }
+  
   treat_vect <- as.factor(treat)
   results<-cbind(treat_vect,response_vect)
   results<- as.data.frame(results)
@@ -170,15 +171,13 @@ cumulative_response<-function(dat){
   ML<-results[treat_vect=="ML",]
   MM<-results[treat_vect=="MM",]
   
-  treatNames<-c("UA","UE","UL","UM","GA","GE","GL","GM","MA","ME","ML","MM")
-  res <- cbind(UA$response_vect,UE$response_vect,UL$response_vect,UM$response_vect,GA$response_vect,GE$respnse_vect,GL$response_vect,GM$response_vect,MA$response_vect,ME$response_vect,ML$response_vect,MM$response_vect)
+  res<-data.frame(UA$response_vect,UE$response_vect,UL$response_vect,UM$response_vect,GA$response_vect,GE$response_vect,GL$response_vect,GM$response_vect,MA$response_vect,ME$response_vect,ML$response_vect,MM$response_vect)
+  
   colnames(res) <- c("UA","UE","UL","UM","GA","GE","GL","GM","MA","ME","ML","MM")
-
+  
   totals <- apply(res, 2, sum)
  
-  print(totals)
-  print(head(res, 20))
-
+ return(totals)
 }
 
 ##### Test function for resp, bact growth, and fungal growth
@@ -186,6 +185,7 @@ cumulative_response<-function(dat){
 # Respiration
 resp_dat<-filter(raw_dat,resp_rate_ug_CO2.g_soil.h.!="NA")
 respdat6<-filter(resp_dat,replicate_numb==6)
+
 resp6<-respdat6$resp_rate_ug_CO2.g_soil.h.
 day6<-as.numeric(respdat6$day)
 treat6<-respdat6$treatment_ID
